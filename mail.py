@@ -10,9 +10,9 @@ def sendEmail(text:str,subject:str):
     #邮箱服务器地址(和自己发邮件的地址是不一样的)
     mail_host = 'smtp.qq.com'  
     #用户名（qq邮箱就是qq号）
-    mail_user = '639289690'  
+    mail_user = ''  
     #密码(qq邮箱为授权码，需打开smtp服务) 
-    mail_pass = 'qvzkwaldhmykbbbf'   
+    mail_pass = ''   
     #邮件发送方邮箱地址
     sender = 'thesunspot_robot@qq.com'  
     #邮件接受方邮箱地址，接受数组
@@ -76,4 +76,3 @@ def sendEmail(text:str,subject:str):
         print('success')
     except smtplib.SMTPException as e:
         print('error',e) #打印错误
-    
