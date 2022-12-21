@@ -1,24 +1,31 @@
 import smtplib
+import json
+import logging
 from email.mime.text import MIMEText
 
 
+
 def sendEmail(text: str, subject: str):
-    DEBUGGING = True
+    with open("config.json", 'r') as load_f:
+        cf = json.load(load_f)
+    DEBUGGING = cf['DEBUGGING']
     # 内容头
-    TEXT_HEARDER = True
+    TEXT_HEARDER = cf['TEXT_HEARDER']
     # 内容尾
-    TEXT_FOOTER = True
+    TEXT_FOOTER = cf['TEXT_FOOTER']
     # 设置服务器所需信息
     # 邮箱服务器地址(和自己发邮件的地址是不一样的)
-    mail_host = 'smtp.qq.com'
+    mail_host = cf['mail_host']
     # 用户名（qq邮箱就是qq号）
-    mail_user = ''
+    mail_user = cf['mail_user']
     # 密码(qq邮箱为授权码，需打开smtp服务)
-    mail_pass = ''
+    mail_pass = cf['mail_pass']
     # 邮件发送方邮箱地址
-    sender = 'thesunspot_robot@qq.com'
+    sender = cf['sender']
+    receivers = []
+    for key, values in cf['receivers'].items():
+        receivers.append(values)
     # 邮件接受方邮箱地址，接受数组
-    receivers = ["thesunspot_robot@qq.com", "3350024@163.com", "1092312830@qq.com"]
 
     if not DEBUGGING:
         mailFile = 'mails.txt'
@@ -52,6 +59,7 @@ def sendEmail(text: str, subject: str):
             text = text + footerText
 
     print(receivers)
+    logging.debug(receivers)
     # 设置email信息
     # 邮件内容设置
     message = MIMEText(text, 'plain', 'utf-8')
@@ -62,7 +70,6 @@ def sendEmail(text: str, subject: str):
     message['From'] = sender
     # 接受方信息
     message['To'] = receivers[0]
-
     # 登录并发送邮件
     try:
         smtpObj = smtplib.SMTP()
@@ -75,6 +82,8 @@ def sendEmail(text: str, subject: str):
             sender, receivers, message.as_string())
         # 退出
         smtpObj.quit()
+        logging.debug('success')
         print('success')
     except smtplib.SMTPException as e:
+        logging.error(e)
         print('error', e)  # 打印错误
